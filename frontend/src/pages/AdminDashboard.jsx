@@ -6,6 +6,7 @@ export default function AdminDashboard() {
   const { user, logout, token } = useAuth()
   const [activeTab, setActiveTab] = useState('dashboard')
   const [expenses, setExpenses] = useState([])
+  const [payments, setPayments] = useState([])
   const [summary, setSummary] = useState({ totalPayments: 0, totalExpenses: 0, balance: 0 })
   const [pendingOwners, setPendingOwners] = useState([])
   const [loading, setLoading] = useState(true)
@@ -33,6 +34,20 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       console.error('Error fetching expenses:', err)
+    }
+  }
+
+  const fetchPayments = async () => {
+    try {
+      const res = await fetch('/api/payments/latest', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setPayments(data)
+      }
+    } catch (err) {
+      console.error('Error fetching payments:', err)
     }
   }
 
@@ -67,7 +82,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
-      await Promise.all([fetchExpenses(), fetchSummary(), fetchPendingOwners()])
+      await Promise.all([fetchExpenses(), fetchPayments(), fetchSummary(), fetchPendingOwners()])
       setLoading(false)
     }
     fetchData()
@@ -212,7 +227,38 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="dashboard-grid">
+            <div className="dashboard-grid dashboard-grid-full">
+              <section className="latest-expenses latest-income">
+                <h3>Últimos Ingresos Registrados</h3>
+                {loading ? <p>Cargando...</p> : (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Fecha</th>
+                        <th>Propietario</th>
+                        <th>Apartamento</th>
+                        <th>Monto</th>
+                        <th>Moneda</th>
+                        <th>Concepto</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {payments.slice(0, 10).map(payment => (
+                        <tr key={payment.id}>
+                          <td>{new Date(payment.paymentDate).toLocaleDateString('es-VE')}</td>
+                          <td>{payment.user?.name || '-'}</td>
+                          <td>{payment.user?.unitNumber || '-'}</td>
+                          <td className="amount-income">{payment.amount}</td>
+                          <td>{payment.currency}</td>
+                          <td>{payment.note || '-'}</td>
+                        </tr>
+                      ))}
+                      {payments.length === 0 && <tr><td colSpan="6">No hay ingresos registrados</td></tr>}
+                    </tbody>
+                  </table>
+                )}
+              </section>
+
               <section className="latest-expenses">
                 <h3>Últimos Gastos Registrados</h3>
                 {loading ? <p>Cargando...</p> : (
@@ -281,8 +327,9 @@ export default function AdminDashboard() {
 
         {activeTab === 'expenses' && (
           <div className="expense-form-view">
-            <h2>Registrar Nuevo Gasto</h2>
-            <form onSubmit={handleExpenseSubmit} className="expense-form">
+            <div className="form-card">
+              <form onSubmit={handleExpenseSubmit} className="expense-form">
+                <h2>Registrar Nuevo Gasto</h2>
               <div className="field">
                 <label>Descripción *</label>
                 <input
@@ -365,7 +412,8 @@ export default function AdminDashboard() {
               </div>
 
               <button type="submit" className="btn-primary">Registrar Gasto</button>
-            </form>
+              </form>
+            </div>
           </div>
         )}
 

@@ -64,14 +64,16 @@ function paymentsRouter(prisma) {
           });
         }
 
+        console.log("Creating payment with currency:", currency, "type:", typeof currency);
+
         const payment = await prisma.payment.create({
           data: {
             userId: req.user.id,
-            amount,
-            currency,
-            exchangeRate,
-            periodYear,
-            periodMonth,
+            amount: String(amount),
+            currency: currency,
+            exchangeRate: exchangeRate ? String(exchangeRate) : null,
+            periodYear: parseInt(periodYear, 10),
+            periodMonth: parseInt(periodMonth, 10),
             paymentDate: paymentDate ? new Date(paymentDate) : new Date(),
             method,
             note,
@@ -114,8 +116,12 @@ Nota: ${payment.note || "-"}
 
         res.status(201).json(payment);
       } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Error al registrar pago" });
+        console.error("Error creating payment:", err);
+        console.error("Error details:", err.message, err.meta);
+        res.status(500).json({ 
+          message: "Error al registrar pago",
+          error: err.message 
+        });
       }
     }
   );
@@ -134,6 +140,25 @@ Nota: ${payment.note || "-"}
         const payments = await prisma.payment.findMany({
           where,
           orderBy: { paymentDate: "desc" },
+          include: { user: true },
+        });
+        res.json(payments);
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error al obtener pagos" });
+      }
+    }
+  );
+
+  // Últimos pagos (para admin - similar a latest expenses)
+  router.get(
+    "/latest",
+    authMiddleware("ADMIN"),
+    async (req, res) => {
+      try {
+        const payments = await prisma.payment.findMany({
+          orderBy: { paymentDate: "desc" },
+          take: 20,
           include: { user: true },
         });
         res.json(payments);

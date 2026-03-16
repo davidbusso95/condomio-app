@@ -1,98 +1,109 @@
-## Condominio App
+# 🏢 Plataforma de Gestión Administrativa para Condominios
 
-Aplicación web para la gestión administrativa de un condominio (15 propietarios y 1 administrador).
+Aplicación web diseñada para administrar de forma simple y organizada las finanzas y la gestión administrativa de un condominio pequeño o mediano.
 
-Incluye:
-- Backend: Node.js + Express + PostgreSQL + Prisma
-- Frontend: React + Vite
+El sistema permite a los propietarios registrar sus pagos mensuales y al administrador gestionar ingresos, egresos y el estado financiero general del condominio.
 
-### 1. Requisitos previos
+---
 
-- Node.js instalado (v18+ recomendado).
-- NPM.
-- Prisma CLI (se instala como devDependency).
+## 🚀 Funcionalidades principales
 
-### 2. Backend
+### 👤 Sistema de usuarios
+- Registro y login de propietarios
+- Acceso seguro con usuario y contraseña
+- Gestión de perfiles
 
-Ruta: `backend`
+### 💰 Gestión de pagos
+- Registro de pagos mensuales de propietarios
+- Visualización de estado de cuentas
+- Listado de propietarios con pagos pendientes
 
-#### 2.1 Variables de entorno
+### 📊 Panel de administración
+- Registro de ingresos y egresos
+- Control financiero del condominio
+- Visualización de los últimos gastos registrados
 
-Editar `backend/.env` y revisar:
+### 📑 Exportación de datos
+- Exportación completa de la base de datos a **Excel**
+- Facilita procesos contables y auditorías
 
-- `DATABASE_URL` y `SHADOW_DATABASE_URL`: URL de conexión a PostgreSQL (las que creó `prisma dev` funcionan en local).
-- `PORT`: puerto del backend (por defecto `4000`).
-- `JWT_SECRET`: clave secreta para firmar los tokens JWT (cámbiala por una segura).
-- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`: datos de tu servidor de correo.
+### 💱 Soporte multimoneda
+- Registro de transacciones en:
+  - Pesos argentinos (ARS)
+  - Dólares estadounidenses (USD)
 
-#### 2.2 Migraciones de base de datos
+### 📧 Notificaciones automáticas
+- Envío automático de correo electrónico
+- El sistema envía una copia de los datos enviados en cada formulario
 
-En una terminal:
+---
 
-```bash
-cd backend
-npx prisma dev --name init
-```
+## 🗄️ Base de datos
 
-Esto levanta una instancia local de PostgreSQL y aplica el esquema definido en `prisma/schema.prisma`.
+El sistema utiliza una estructura relacional optimizada para gestionar:
 
-#### 2.3 Ejecutar backend
+- Usuarios
+- Propietarios
+- Pagos
+- Ingresos
+- Egresos
+- Historial financiero
 
-```bash
-cd backend
-npm run dev
-```
+Las relaciones están diseñadas para mantener integridad de datos y facilitar reportes administrativos.
 
-El API quedará disponible en `http://localhost:4000/api`.
+---
 
-Rutas principales:
-- `POST /api/auth/register`: crear usuario (admin o propietario).
-- `POST /api/auth/login`: login, devuelve JWT.
-- `GET /api/payments/my`: pagos del propietario autenticado.
-- `POST /api/payments`: registrar pago de propietario (envía correo).
-- `GET /api/payments`: listar pagos (admin).
-- `GET /api/expenses/latest`: últimos gastos (admin).
-- `POST /api/expenses`: crear gasto (admin, envía correo).
-- `GET /api/reports/summary`: resumen de ingresos/egresos.
-- `GET /api/reports/pending-owners`: propietarios con pagos pendientes.
-- `GET /api/reports/export-excel`: exporta ingresos y egresos a Excel.
+## 🔐 Acceso de prueba
 
-### 3. Frontend
+Para probar el sistema como administrador:
 
-Ruta: `frontend`
+Email:
+condominio@gmail.com
 
-#### 3.1 Variables de entorno
+Contraseña:
+1234
 
-Crear archivo `frontend/.env` (si lo deseas) con:
+También puedes registrarte como usuario y probar el sistema desde la perspectiva de un propietario.
 
-```bash
-VITE_API_URL=http://localhost:4000/api
-```
+---
 
-Si no se define, por defecto el frontend usará `http://localhost:4000/api`.
+## 🧪 Objetivo del proyecto
 
-#### 3.2 Ejecutar frontend
+Este proyecto fue desarrollado como una solución práctica para la gestión administrativa de condominios pequeños, priorizando:
 
-```bash
-cd frontend
-npm run dev
-```
+- simplicidad
+- claridad financiera
+- organización de pagos
+- transparencia en gastos
 
-Abre la URL que muestre Vite (por defecto `http://localhost:5173`).
+---
 
-### 4. Flujo básico
+## 🛠️ Tecnologías utilizadas
 
-1. Crear un usuario administrador con `POST /api/auth/register` (por ejemplo usando Postman o curl).
-2. Iniciar sesión desde el frontend (pantalla de login).
-3. Como propietario:
-   - Registrar pagos en `/api/payments` (desde el frontend se puede ir ampliando la UI).
-4. Como administrador:
-   - Registrar gastos en `/api/expenses`.
-   - Ver últimos gastos y resumen en `/api/reports/*`.
-   - Exportar ingresos y egresos a Excel con `/api/reports/export-excel`.
+- Frontend: (agrega las que usaste)
+- Backend: (Node / Express / etc)
+- Base de datos: PostgreSQL
+- Exportación de datos: Excel
+- Sistema de autenticación
+- Envío de emails automático
 
-Sobre esta base se pueden ir añadiendo:
-- Vistas separadas para administrador y propietario.
-- Tablas detalladas de pagos, gastos y propietarios con pagos pendientes.
-- Mejoras de UI/UX y controles adicionales de validación.
+---
+
+## 📌 Estado del proyecto
+
+Proyecto funcional en etapa inicial.  
+Se planean futuras mejoras como:
+
+- dashboard con gráficos financieros
+- recordatorios automáticos de pagos
+- sistema de notificaciones
+- mejor control de permisos
+
+---
+
+## 👨‍💻 Autor
+
+David
+
+Desarrollador Frontend en formación con enfoque en aplicaciones web funcionales y soluciones prácticas para gestión administrativa.
 

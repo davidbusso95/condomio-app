@@ -109,8 +109,8 @@ export default function OwnerPayments() {
       <main className="dashboard-content">
         <div className="owner-grid">
           <section className="payment-form-section">
-            <h2>Registrar Nuevo Pago</h2>
             <form onSubmit={handlePaymentSubmit} className="payment-form">
+              <h2>Registrar Nuevo Pago</h2>
               <div className="field-row">
                 <div className="field">
                   <label>Monto *</label>
